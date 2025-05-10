@@ -22,78 +22,63 @@ As an aspiring data analyst contributing to wildlife conservation and monitoring
 **Dataset:**  Fisheries Inventory, Trout Data, at Rocky Mountain National Park 2021–2022.  
 **Source:** [Catalog.Data.Gov](https://catalog.data.gov/dataset/fisheries-inventory-trout-data-at-rocky-mountain-national-park-2021-2022-open-format-datas)
 
+```{r}
 # Load necessary libraries
 library(tidyverse)
 library(lubridate)
 library(readr)
 
 # Load data
-ROMOFish_TroutData_SurveyEvent <- read_csv("Wildfire Impact on Trout/ROMOFish_TroutData_SurveyEvent.csv")
+ROMOFish_TroutData_SurveyEvent <- read_csv("Wildfire Impact on Trout/ROMOFish_TroutData_SurveyEvent.csv") 
 ROMOFish_TroutData_Occurrence <- read_csv("Wildfire Impact on Trout/ROMOFish_TroutData_Occurrence.csv")
 ROMOFish_TroutData_Taxon <- read_csv("Wildfire Impact on Trout/ROMOFish_TroutData_Taxon.csv")
+
+```
 
 ---
 
 ## 🧹 Process
 
-```r
-# Load necessary libraries
-library(tidyverse)
-library(lubridate)
+```{r}
+# Clean and merge datasets
+ROMOFish_TroutData_SurveyEvent <- ROMOFish_TroutData_SurveyEvent %>%
+  mutate(eventDate = ymd(startDate), year = year(eventDate))
 
-# Load dataset
-SWAN_FW_Contaminants_Data_LACL_2019_2020 <- read_csv("SWAN_FW_Contaminants_Data_LACL_2019_2020.csv")
+trout_data <- ROMOFish_TroutData_Occurrence %>%
+  left_join(ROMOFish_TroutData_SurveyEvent, by = "eventID") %>%
+  left_join(ROMOFish_TroutData_Taxon, by = "taxonID")
 
-# Select and rename key variables
-processed_data <- filtered_data %>%
-  select(-Comments, -Methyl_Hg) %>%
-  rename(
-    total_hg = Total_Hg,
-    length = Length,
-    weight = Weight,
-    age = Age
-  )
-
-# Filter out rows with missing values in key fields
-processed_data <- processed_data %>%
-  filter(!is.na(total_hg), !is.na(length), !is.na(weight), !is.na(age))
-
-# Convert date column if applicable (if needed for temporal analysis)
-processed_data$date <- mdy(processed_data$Date_Collected)
-
-# Inspect cleaned data
-summary(processed_data)
+# Filter clean biological records
+trout_data_clean <- trout_data %>%
+  filter(!is.na(length) & !is.na(mass) & length > 0 & mass > 0) %>%
+  mutate(length_category = cut(length,
+                               breaks = c(0, 100, 200, 300, 400),
+                               labels = c("0-100mm", "101-200mm", "201-300mm", "301-400mm"),
+                               right = FALSE))
 
 ```
 
 ## 📊 Analyze
-* Spatial Analysis: Compared mercury concentrations between Fishtrap Lake and Lake Clark.
-* Temporal Analysis: Assessed year-to-year differences between 2019 and 2020 samples.
-* Biological Analysis:
-  * Correlated fish length and weight with mercury concentration.
-  * Analyzed species-specific differences in mercury accumulation.
-* Outlier Detection: Identified individual fish with exceptionally high mercury levels for further attention
-
+![Total Trout by Species and Year]()
 ```{r}
-# Summary stats by lake
-summary_stats_lake <- processed_data %>%
-  group_by(Lake) %>%
-  summarise(
-    avg_mercury = mean(total_hg, na.rm = TRUE),
-    max_mercury = max(total_hg, na.rm = TRUE),
-    sample_count = n()
-  )
-summary_stats_lake
+# Summarize trout count by species and year
+trout_summary <- trout_data_clean %>%
+  group_by(vernacularName, year) %>%
+  summarise(total_trout = sum(individualCount, na.rm = TRUE), .groups = "drop")
 
-# Summary stats by species
-summary_stats_species <- processed_data %>%
-  group_by(Species) %>%
-  summarise(
-    avg_mercury = mean(total_hg, na.rm = TRUE),
-    max_mercury = max(total_hg, na.rm = TRUE),
-    sample_count = n()
-  )
-summary_stats_species
+# Visualization
+library(ggplot2)
+
+ggplot(trout_summary, aes(x = factor(year), y = total_trout, fill = vernacularName)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Total Trout by Species and Year",
+    x = "Year",
+    y = "Total Count",
+    fill = "Species",
+    caption = "Source: ROMO Trout Data (2021–2022), catalog.data.gov"
+  ) +
+  theme_minimal()
 ```
 
 ---
