@@ -60,6 +60,7 @@ trout_data_clean <- trout_data %>%
 ```
 
 ## 📊 Analyze
+
 ![Total Trout by Species and Year](https://raw.githubusercontent.com/ssagastume11/Fisheries-Inventory-Trout-Data-ROMO-2021-2022/refs/heads/main/Total%20Trout%20by%20Species.png)
 ```{r}
 # Summarize trout count by species and year
@@ -92,8 +93,8 @@ This report summarizes trends in trout populations post-wildfire using bar chart
 
 ---
 
-# 🛡️ Act
-![]
+# ✅ Act
+
 ```{r}
 # Identify significant changes in trout populations between years
 significant_changes <- trout_summary %>%
@@ -108,11 +109,13 @@ significant_changes <- trout_summary %>%
 # Display results
 print(significant_changes)
 ```
-# 🧩 Recommendations
-1. **Prioritize species** for further study and potential public health advisories due to elevated mercury concentrations.
-2. **Share findings** to National Park Service ecologists, fisheries biologists, and public health officials to inform conservation and safety strategies.
-3. **Expand future monitoring** to other lakes within the SWAN region and include more years to strengthen trend analysis.
-4. **Educate local communities** and park visitors about mercury exposure and safe fish consumption practices.
+---
+
+# 💡 Recommendations
+1. **Increase Monitoring Frequency**: Continue yearly sampling to detect ecological changes.
+2. **Focus Restoration Efforts**: Allocate conservation resources to sites where trout numbers are declining.
+3. **Improve Public Engagement**: Share simplified versions of findings with local communities and visitors.
+4. **Protect Sensitive Habitats**: Use this data to identify and protect habitats supporting at-risk trout species.
 
 ---
 
