@@ -14,7 +14,7 @@ As an aspiring data analyst contributing to wildlife conservation and monitoring
 
 ## ❓ Ask
 
-### Business Task: 
+### Business Task 
 Determine how recent wildfires influenced trout populations in Rocky Mountain National Park. The analysis investigates trends in trout counts, sizes, and species composition across different sites and years.
 
 ---
