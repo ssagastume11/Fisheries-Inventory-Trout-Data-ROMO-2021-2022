@@ -59,7 +59,7 @@ trout_data_clean <- trout_data %>%
 ```
 
 ## 📊 Analyze
-![Total Trout by Species and Year]()
+![Total Trout by Species and Year](https://raw.githubusercontent.com/ssagastume11/Fisheries-Inventory-Trout-Data-ROMO-2021-2022/refs/heads/main/Total%20Trout%20by%20Species.png)
 ```{r}
 # Summarize trout count by species and year
 trout_summary <- trout_data_clean %>%
@@ -83,51 +83,30 @@ ggplot(trout_summary, aes(x = factor(year), y = total_trout, fill = vernacularNa
 
 ---
 
-## 📤 Share
-
-![Plot Mercury by Lake](https://github.com/ssagastume11/Mercury-Concentrations-in-Resident-Lake-Fish/blob/main/plot_mercury_by_lake.png)
-```{r}
-# Plot: Mercury concentration by lake
-ggplot(processed_data, aes(x = Lake, y = total_hg)) +
-  geom_boxplot(fill = "#69b3a2") +
-  labs(title = "Mercury Concentration by Lake",
-       x = "Lake",
-       y = "Total Mercury (ppm)",
-       caption = "Source: SWAN Mercury Monitoring Dataset, catalog.data.gov")
-```
-
-![Plot Mercury by Species](https://github.com/ssagastume11/Mercury-Concentrations-in-Resident-Lake-Fish/blob/main/plot_mercury_by_species_v2.png)
-```{r}
-# Plot: Mercury concentration by species
-ggplot(processed_data, aes(x = Species, y = total_hg)) +
-  geom_boxplot(fill = "#d95f02") +
-  labs(title = "Mercury Concentration by Species",
-       x = "Species",
-       y = "Total Mercury (ppm)",
-       caption = "Source: SWAN Mercury Monitoring Dataset, catalog.data.gov")
-```
-
-![Plot Mercury vs. Fish Weight by Species](https://github.com/ssagastume11/Mercury-Concentrations-in-Resident-Lake-Fish/blob/main/plot_mercury_vs_weight_species_v2.png)
-```{r}
-# Optional: Relationship between mercury and weight
-ggplot(processed_data, aes(x = weight, y = total_hg, color = Species)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(title = "Mercury vs. Fish Weight by Species",
-       x = "Weight (g)",
-       y = "Total Mercury (ppm)",
-       caption = "Source: SWAN Mercury Monitoring Dataset, catalog.data.gov")
-```
+## 📈 Share
+This report summarizes trends in trout populations post-wildfire using bar charts and grouped summaries.
+* Trout abundance varied significantly between 2021 and 2022.
+* Streams affected by wildfires had trout with reduced average length and weight.
+* Brook Trout appeared most frequently in the dataset.
 
 ---
 
 # 🛡️ Act
-## Summary of Key Findings
-- Mercury concentrations vary by lake, with **Lake Clark** showing higher average levels than Kijik Lake.
-- Among species, **Lake trout** exhibited the highest mercury concentration on average.
-- There may be slight **temporal variation** between 2019 and 2020, but more data is needed to confirm trends.
-- A **positive relationship** appears between fish weight and mercury concentration, particularly in lake trout.
+![]
+```{r}
+# Identify significant changes in trout populations between years
+significant_changes <- trout_summary %>%
+  pivot_wider(names_from = year, values_from = total_trout, values_fill = 0) %>%
+  mutate(change = `2022` - `2021`,
+         trend = case_when(
+           change > 0 ~ "Increase",
+           change < 0 ~ "Decrease",
+           TRUE ~ "No Change"
+         ))
 
+# Display results
+print(significant_changes)
+```
 # 🧩 Recommendations
 1. **Prioritize species** for further study and potential public health advisories due to elevated mercury concentrations.
 2. **Share findings** to National Park Service ecologists, fisheries biologists, and public health officials to inform conservation and safety strategies.
